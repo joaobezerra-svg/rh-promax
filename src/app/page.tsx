@@ -117,6 +117,8 @@ export default function RHPROMAX_V8_FULL() {
 
       if (!finalEmail) throw new Error("E-mail ou Matrícula obrigatória")
 
+      console.log("Tentando login com:", { finalEmail, password }); // DEBUG
+
       const { error } = await supabase.auth.signInWithPassword({
         email: finalEmail,
         password

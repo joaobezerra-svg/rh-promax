@@ -38,21 +38,21 @@ export default function CategoryChart({ url, equipe }: CategoryChartProps) {
                 }
 
                 const csvTexto = await response.text();
-                const linhas = csvTexto.split('\n').filter(linha => linha.trim() !== '');
-                const dadosParaGrafico: ChartData[] = [];
+                const result = Papa.parse(csvTexto, { header: false, skipEmptyLines: true });
+                const linhas = result.data as string[][];
 
-                console.log("Linhas CSV (First 5):", linhas.slice(0, 5));
+                console.log("Parsed CSV Data (First 5):", linhas.slice(0, 5));
 
-                // Começa do 1 para pular o cabeçalho
+                // Start from index 1 to skip header
                 for (let i = 1; i < linhas.length; i++) {
-                    const colunas = linhas[i].split(',');
+                    const colunas = linhas[i];
 
-                    // Mapeamento Indexado: 0=EQUIPE, 2=METAS, 3=METAS CUMPRIDAS
-                    const colEquipe = colunas[0]?.trim();
+                    // Index Mapping: 0=EQUIPE, 2=METAS, 3=METAS CUMPRIDAS
+                    const colEquipe = colunas[0];
                     const equipeAtual = String(colEquipe || '').trim().toUpperCase();
                     const equipeAlvo = String(equipe || '').trim().toUpperCase();
 
-                    // Filtra pela equipe deste Card (Comparação Robust)
+                    // Robust Comparison
                     if (equipeAtual === equipeAlvo) {
                         const parseNumber = (val: any) => {
                             if (!val) return 0;
@@ -60,18 +60,18 @@ export default function CategoryChart({ url, equipe }: CategoryChartProps) {
                             return Number(cleanVal) || 0;
                         }
 
-                        const expectativa = parseNumber(colunas[2]); // Coluna 2
-                        const realidade = parseNumber(colunas[3]);   // Coluna 3
+                        const expectativa = parseNumber(colunas[2]); // Column 2
+                        const realidade = parseNumber(colunas[3]);   // Column 3
 
-                        // Cálculo de Porcentagem
+                        // Percentage Calculation
                         let porcentagem = 0;
                         if (expectativa > 0) {
                             porcentagem = (realidade / expectativa) * 100;
                         } else if (realidade > 0) {
-                            porcentagem = 100; // Se não tem meta mas tem realizado, considera 100%? ou tratar diferente.
+                            porcentagem = 100;
                         }
 
-                        // Arredondar para 1 casa decimal
+                        // Round to 1 decimal place
                         porcentagem = Math.round(porcentagem * 10) / 10;
 
                         dadosParaGrafico.push({
@@ -79,7 +79,7 @@ export default function CategoryChart({ url, equipe }: CategoryChartProps) {
                             expectativa,
                             realidade,
                             porcentagem,
-                            nameTooltip: colunas[1] // Mantendo proprietário
+                            nameTooltip: colunas[1] // Owner/Details
                         });
                     }
                 }
