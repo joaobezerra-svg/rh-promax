@@ -112,7 +112,7 @@ export default function RHPROMAX_V8_FULL() {
 
       const isMatricula = /^\d+$/.test(email)
       if (isMatricula) {
-        finalEmail = `${email}@sistema.com`
+        finalEmail = `${email}@ccm.com`
       }
 
       if (!finalEmail) throw new Error("E-mail ou Matrícula obrigatória")
