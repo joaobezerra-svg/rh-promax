@@ -747,7 +747,7 @@ export default function RHPROMAX_V8_FULL() {
                     className="w-full bg-zinc-900 border border-purple-500/30 rounded p-2 text-white focus:border-purple-500 outline-none"
                     value={nomeCategoria}
                     onChange={(e) => setNomeCategoria(e.target.value)}
-                    placeholder="Ex: LICENSA ou Produção RH"
+                    placeholder="Ex: LICENÇA ou Produção RH"
                   />
                 </div>
 
